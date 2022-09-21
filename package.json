@@ -1,0 +1,19 @@
+{
+  "name": "google-images-all-sizes",
+  "version": "1.8.0",
+  "description": "",
+  "scripts": {
+    "build": "gulp"
+  },
+  "author": "",
+  "dependencies": {
+    "utils.js": "github:Nourz1234/utils.js"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "map-stream": "^0.0.7"
+  }
+}

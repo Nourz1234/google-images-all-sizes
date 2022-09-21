@@ -1,0 +1,1 @@
+let FILES: { [key: string] : string } = {};
