@@ -1,13 +1,25 @@
 {
   "name": "google-images-all-sizes",
   "version": "1.8.0",
-  "description": "",
+  "description": "A Userscript that adds 'All Sizes' button to google images.",
+  "license": "MIT",
+  "main": "./dist/google-images-all-sizes.js",
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "update-package-lock": "npm i --package-lock-only"
   },
-  "author": "",
+  "repository": "github:Nourz1234/google-images-all-sizes",
+  "author": {
+    "name": "Nour Nasser",
+    "email": "nours02345@gmail.com",
+    "url": "https://github.com/Nourz1234"
+  },
+  "bugs": {
+    "url": "https://github.com/Nourz1234/google-images-all-sizes/issues"
+  },
+  "homepage": "https://github.com/Nourz1234/google-images-all-sizes#readme",
   "dependencies": {
-    "utils.js": "github:Nourz1234/utils.js"
+    "utils.js": "github:Nourz1234/utils.js#v1.1.0"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
