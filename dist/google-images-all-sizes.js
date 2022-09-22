@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Google Images All Sizes
-// @version      1.8.0
+// @version      1.9.0
 // @description  Adds 'All Sizes' and 'Full Size' buttons to google images.
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
 // @license      MIT
@@ -16,204 +16,252 @@
 // ==/UserScript==
 
 // extensions.ts
-Array.prototype._first = function () {
-    return this[0];
-};
-Array.prototype._firstOr = function (defaultValue) {
-    return this.length ? this[0] : defaultValue;
-};
-Array.prototype._last = function () {
-    return this[this.length - 1];
-};
-Array.prototype._lastOr = function (defaultValue) {
-    return this.length ? this[this.length - 1] : defaultValue;
-};
-Array.prototype._removeAt = function (index) {
-    return this.splice(index, 1)[0];
-};
-Array.prototype._insertAt = function (index, ...items) {
-    this.splice(index, 0, ...items);
-};
-Array.prototype._remove = function (item) {
-    const index = this.indexOf(item);
-    if (index !== -1) {
-        this.splice(index, 1);
+var NourzUtils;
+(function (NourzUtils) {
+    // an initializer for the extension methods.
+    // to use extension methods they must be explicitly initialized.
+    // this is done so that in the case that extension methods are not needed
+    // you can avoid the trouble that comes with modifying prototypes.
+    function extensions() {
+        arrayExtensions();
+        objectExtensions();
+        stringExtensions();
     }
-};
-// 'Object.prototype' seems to be special.
-// can only add non-enumerable properties using 'Object.defineProperty'
-// otherwise pages that use jQuery break. ¯\_(ツ)_/¯
-Object.defineProperty(Object.prototype, "_entries", {
-    enumerable: false, configurable: true,
-    value: function () {
-        return Object.entries(this);
+    NourzUtils.extensions = extensions;
+    function arrayExtensions() {
+        Array.prototype._nuFirst = function () {
+            return this[0];
+        };
+        Array.prototype._nuFirstOr = function (defaultValue) {
+            return this.length ? this[0] : defaultValue;
+        };
+        Array.prototype._nuLast = function () {
+            return this[this.length - 1];
+        };
+        Array.prototype._nuLastOr = function (defaultValue) {
+            return this.length ? this[this.length - 1] : defaultValue;
+        };
+        Array.prototype._nuRemoveAt = function (index) {
+            return this.splice(index, 1)[0];
+        };
+        Array.prototype._nuInsertAt = function (index, ...items) {
+            this.splice(index, 0, ...items);
+        };
+        Array.prototype._nuRemove = function (item) {
+            const index = this.indexOf(item);
+            if (index !== -1) {
+                this.splice(index, 1);
+            }
+        };
     }
-});
-Object.defineProperty(Object.prototype, "_update", {
-    enumerable: false, configurable: true,
-    value: function (...sources) {
-        return Object.assign(this, ...sources);
+    NourzUtils.arrayExtensions = arrayExtensions;
+    function objectExtensions() {
+        // 'Object.prototype' seems to be special.
+        // can only add non-enumerable properties using 'Object.defineProperty'
+        // otherwise pages that use jQuery break. ¯\_(ツ)_/¯
+        Object.defineProperty(Object.prototype, "_nuEntries", {
+            enumerable: false, configurable: true, writable: true,
+            value: function () {
+                return Object.entries(this);
+            }
+        });
+        Object.defineProperty(Object.prototype, "_nuAssign", {
+            enumerable: false, configurable: true, writable: true,
+            value: function (...sources) {
+                return Object.assign(this, ...sources);
+            }
+        });
     }
-});
-String.prototype._removePrefix = function (prefix) {
-    let str = this;
-    while (str.startsWith(prefix))
-        str = str.substring(prefix.length);
-    return str;
-};
-String.prototype._removeSuffix = function (suffix) {
-    let str = this;
-    while (str.endsWith(suffix))
-        str = str.substring(0, str.length - suffix.length);
-    return str;
-};
-String.prototype._padd = function (char, length) {
-    return (char.repeat(length) + this).slice(-Math.max(this.length, length));
-};
+    NourzUtils.objectExtensions = objectExtensions;
+    function stringExtensions() {
+        String.prototype._nuRemovePrefix = function (prefix) {
+            let str = this;
+            while (str.startsWith(prefix))
+                str = str.substring(prefix.length);
+            return str;
+        };
+        String.prototype._nuRemoveSuffix = function (suffix) {
+            let str = this;
+            while (str.endsWith(suffix))
+                str = str.substring(0, str.length - suffix.length);
+            return str;
+        };
+        String.prototype._nuPadd = function (char, length) {
+            return (char.repeat(length) + this).slice(-Math.max(this.length, length));
+        };
+    }
+    NourzUtils.stringExtensions = stringExtensions;
+})(NourzUtils || (NourzUtils = {}));
 // Utils.ts
-// url and url params manipulation
-function getQueryParams(url) {
-    return Array.from(new URL(url).searchParams.entries());
-}
-function setQueryParams(url, params) {
-    let oUrl = new URL(url);
-    let searchParams = new URLSearchParams();
-    for (let [name, value] of params) {
-        searchParams.append(name, value);
+var NourzUtils;
+(function (NourzUtils) {
+    // url and url params manipulation
+    function getQueryParams(url) {
+        return Array.from(new URL(url).searchParams.entries());
     }
-    oUrl.search = searchParams.toString();
-    return oUrl.toString();
-}
-function getQueryParam(url, param, defValue = null) {
-    let params = new URL(url).searchParams;
-    return params.has(param) ? params.get(param) : defValue;
-}
-function setQueryParam(url, param, value) {
-    let oUrl = new URL(url);
-    oUrl.searchParams.set(param, value);
-    return oUrl.toString();
-}
-function getCurrentQueryParams() {
-    return getQueryParams(window.location.href);
-}
-// DOM stuff
-function isTopFrame(win = window) {
-    return win === win.parent;
-}
-function isElementVisible(elem) {
-    return elem.offsetParent !== null;
-}
-function getElementOwnText(elem) {
-    let text = '';
-    for (let node of elem.childNodes) {
-        if (node.nodeName === '#text') {
-            text += node.nodeValue;
+    NourzUtils.getQueryParams = getQueryParams;
+    function setQueryParams(url, params) {
+        let oUrl = new URL(url);
+        let searchParams = new URLSearchParams();
+        for (let [name, value] of params) {
+            searchParams.append(name, value);
+        }
+        oUrl.search = searchParams.toString();
+        return oUrl.toString();
+    }
+    NourzUtils.setQueryParams = setQueryParams;
+    function getQueryParam(url, param, defValue = null) {
+        let params = new URL(url).searchParams;
+        return params.has(param) ? params.get(param) : defValue;
+    }
+    NourzUtils.getQueryParam = getQueryParam;
+    function setQueryParam(url, param, value) {
+        let oUrl = new URL(url);
+        oUrl.searchParams.set(param, value);
+        return oUrl.toString();
+    }
+    NourzUtils.setQueryParam = setQueryParam;
+    function getCurrentQueryParams() {
+        return getQueryParams(window.location.href);
+    }
+    NourzUtils.getCurrentQueryParams = getCurrentQueryParams;
+    // DOM stuff
+    function isTopFrame(win = window) {
+        return win === win.parent;
+    }
+    NourzUtils.isTopFrame = isTopFrame;
+    function isElementVisible(elem) {
+        return elem.offsetParent !== null;
+    }
+    NourzUtils.isElementVisible = isElementVisible;
+    function getElementOwnText(elem) {
+        let text = '';
+        for (let node of elem.childNodes) {
+            if (node.nodeName === '#text') {
+                text += node.nodeValue;
+            }
+        }
+        return text;
+    }
+    NourzUtils.getElementOwnText = getElementOwnText;
+    function createElementFromHTML(html) {
+        let temp = document.createElement("div");
+        temp.innerHTML = html;
+        let elem = temp.firstElementChild;
+        if (elem)
+            temp.removeChild(elem);
+        return elem;
+    }
+    NourzUtils.createElementFromHTML = createElementFromHTML;
+    // react helper
+    class ReactHelper {
+        static setInputValue(input, value) {
+            let proto = Object.getPrototypeOf(input);
+            let valuePD = Object.getOwnPropertyDescriptor(proto, 'value');
+            valuePD?.set?.call(input, value);
+            input.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
-    return text;
-}
-function createElementFromHTML(html) {
-    let temp = document.createElement("div");
-    temp.innerHTML = html;
-    let elem = temp.firstElementChild;
-    if (elem)
-        temp.removeChild(elem);
-    return elem;
-}
-// react helper
-class ReactHelper {
-    static setInputValue(input, value) {
-        let proto = Object.getPrototypeOf(input);
-        let valuePD = Object.getOwnPropertyDescriptor(proto, 'value');
-        valuePD?.set?.call(input, value);
-        input.dispatchEvent(new Event('change', { bubbles: true }));
+    NourzUtils.ReactHelper = ReactHelper;
+    // time
+    function dateSubDays(date, days) {
+        let newDate = new Date();
+        newDate.setTime(date.getTime() - (days * (24 * 60 * 60 * 1000)));
+        return newDate;
     }
-}
-// time
-function dateSubDays(date, days) {
-    let newDate = new Date();
-    newDate.setTime(date.getTime() - (days * (24 * 60 * 60 * 1000)));
-    return newDate;
-}
-// async stuff
-function sleep(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-async function waitUntil(condition, timeoutMs = 0, intervalMs = 100) {
-    let startTime = new Date();
-    while (!condition()) {
-        if (timeoutMs > 0) {
-            let elapsed = Date.now() - startTime.getTime();
-            if (elapsed > timeoutMs)
-                return false;
+    NourzUtils.dateSubDays = dateSubDays;
+    // async stuff
+    function sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
+    }
+    NourzUtils.sleep = sleep;
+    async function waitUntil(condition, timeoutMs = 0, intervalMs = 100) {
+        let startTime = new Date();
+        while (!condition()) {
+            if (timeoutMs > 0) {
+                let elapsed = Date.now() - startTime.getTime();
+                if (elapsed > timeoutMs)
+                    return false;
+            }
+            await sleep(intervalMs);
         }
-        await sleep(intervalMs);
+        return true;
     }
-    return true;
-}
-async function poll(getter, condition, timeoutMs = 0, intervalMs = 100) {
-    let startTime = new Date();
-    let value;
-    while (!condition(value = getter())) {
-        if (timeoutMs > 0) {
-            let elapsed = Date.now() - startTime.getTime();
-            if (elapsed > timeoutMs)
-                return null;
+    NourzUtils.waitUntil = waitUntil;
+    async function poll(getter, condition, timeoutMs = 0, intervalMs = 100) {
+        let startTime = new Date();
+        let value;
+        while (!condition(value = getter())) {
+            if (timeoutMs > 0) {
+                let elapsed = Date.now() - startTime.getTime();
+                if (elapsed > timeoutMs)
+                    return null;
+            }
+            await sleep(intervalMs);
         }
-        await sleep(intervalMs);
+        return value;
     }
-    return value;
-}
-// csv
-function csvEscape(string, always_quote = false) {
-    const escape_chars = [',', '"', '\r', '\n'];
-    let wrap_in_quotes = always_quote ? true : escape_chars.some(x => string.includes(x));
-    string = string.replace('"', '""'); // escape double qoutes
-    return wrap_in_quotes ? `"${string}"` : string;
-}
-function csvFromArray(array, eol = '\r\n', always_quote = false) {
-    return array.map(row => row.map(cell => csvEscape(cell, always_quote)).join(",")).join(eol);
-}
-function csvToArray(string, eol = '\r\n') {
-    let escape = (string) => string.replaceAll(',', '<COMMA>')
-        .replaceAll('\r', '<CR>')
-        .replaceAll('\n', '<LF>');
-    let unescape = (string) => string.replaceAll('<COMMA>', ',')
-        .replaceAll('<CR>', '\r')
-        .replaceAll('<LF>', '\n');
-    string = string.replaceAll(/"((?:[^"]|"")*)(?:"|$)/gs, (_match, group1) => group1 !== undefined ? escape(group1) : '').replaceAll('""', '"'); // unescape double qoutes
-    return string.split(eol).map(row => row.split(',').map(unescape));
-}
-// misc
-function hasKey(obj, key) {
-    return key in obj;
-}
-function rndInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-// an alternative to the deprecated "unescape()" function
-// apparently it can be dropped anytime
-function _unescape(string) {
-    return string.replace(/(?<=%)[0-9a-f]{2}/gi, (match) => {
-        return String.fromCharCode(parseInt(match, 16));
-    });
-}
-function base64Encode(string) {
-    return window.btoa(_unescape(encodeURIComponent(string)));
-}
-function downloadFile(filename, textContent, mimeType) {
-    let elem = document.createElement('a');
-    elem.href = `data:${mimeType};base64;,` + base64Encode(textContent);
-    elem.download = filename;
-    elem.style.display = 'none';
-    document.body.appendChild(elem);
-    elem.click();
-    document.body.removeChild(elem);
-}
+    NourzUtils.poll = poll;
+    // csv
+    function csvEscape(string, always_quote = false) {
+        const escape_chars = [',', '"', '\r', '\n'];
+        let wrap_in_quotes = always_quote ? true : escape_chars.some(x => string.includes(x));
+        string = string.replace('"', '""'); // escape double qoutes
+        return wrap_in_quotes ? `"${string}"` : string;
+    }
+    NourzUtils.csvEscape = csvEscape;
+    function csvFromArray(array, eol = '\r\n', always_quote = false) {
+        return array.map(row => row.map(cell => csvEscape(cell, always_quote)).join(",")).join(eol);
+    }
+    NourzUtils.csvFromArray = csvFromArray;
+    function csvToArray(string, eol = '\r\n') {
+        let escape = (string) => string.replaceAll(',', '<COMMA>')
+            .replaceAll('\r', '<CR>')
+            .replaceAll('\n', '<LF>');
+        let unescape = (string) => string.replaceAll('<COMMA>', ',')
+            .replaceAll('<CR>', '\r')
+            .replaceAll('<LF>', '\n');
+        string = string.replaceAll(/"((?:[^"]|"")*)(?:"|$)/gs, (_match, group1) => group1 !== undefined ? escape(group1) : '').replaceAll('""', '"'); // unescape double qoutes
+        return string.split(eol).map(row => row.split(',').map(unescape));
+    }
+    NourzUtils.csvToArray = csvToArray;
+    // misc
+    function hasKey(obj, key) {
+        return key in obj;
+    }
+    NourzUtils.hasKey = hasKey;
+    function rndInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    NourzUtils.rndInt = rndInt;
+    // an alternative to the deprecated "unescape()" function
+    // apparently it can be dropped anytime
+    function _unescape(string) {
+        return string.replace(/(?<=%)[0-9a-f]{2}/gi, (match) => {
+            return String.fromCharCode(parseInt(match, 16));
+        });
+    }
+    NourzUtils._unescape = _unescape;
+    function base64Encode(string) {
+        return window.btoa(_unescape(encodeURIComponent(string)));
+    }
+    NourzUtils.base64Encode = base64Encode;
+    function downloadFile(filename, textContent, mimeType) {
+        let elem = document.createElement('a');
+        elem.href = `data:${mimeType};base64;,` + base64Encode(textContent);
+        elem.download = filename;
+        elem.style.display = 'none';
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+    }
+    NourzUtils.downloadFile = downloadFile;
+})(NourzUtils || (NourzUtils = {}));
 
 let FILES = {};
 
 (() => {
+    const { hasKey, isElementVisible } = NourzUtils;
     const LocalizedStrings = {
         'en': {
             allSizes: 'All sizes',
@@ -244,7 +292,6 @@ let FILES = {};
         let imgUrl = getPreviewImageUrl();
         if (imgUrl !== null)
             window.open(imgUrl, '_blank');
-        throw new Error("testter");
     }
     async function viewAllSizes() {
         let btnViewAllSizes = this;

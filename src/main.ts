@@ -1,6 +1,7 @@
 
-
 (() => {
+    const { hasKey, isElementVisible } = NourzUtils;
+
     type Strings = {
         allSizes?: string,
         btnAllSizes?: string,
@@ -43,7 +44,6 @@
         let imgUrl = getPreviewImageUrl();
         if (imgUrl !== null)
             window.open(imgUrl, '_blank');
-        throw new Error ("testter");
     }
     
     async function viewAllSizes() {

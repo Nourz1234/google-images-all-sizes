@@ -1,7 +1,16 @@
 {
   "include": [
+    // the order matters
+    "./src/header.ts",
+
+    /* libs */
+    "./node_modules/utils.js/dist/index.d.ts",
     "./node_modules/utils.js/dist/index.js",
-    "./src/**/*",
+
+    "./src/types/*",
+    "./src/files.ts",
+    "./src/files/*",
+    "./src/main.ts",
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
@@ -36,7 +45,7 @@
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
-    "types": ["utils.js"],                                      /* Specify type package names to be included without being referenced in a source file. */
+    // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
     // "moduleSuffixes": [],                             /* List of file name suffixes to search when resolving a module. */
     // "resolveJsonModule": true,                        /* Enable importing .json files. */
@@ -91,7 +100,7 @@
     // "alwaysStrict": true,                             /* Ensure 'use strict' is always emitted. */
     "noUnusedLocals": true,                           /* Enable error reporting when local variables aren't read. */
     "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
-    // "exactOptionalPropertyTypes": true,               /* Interpret optional property types as written, rather than adding 'undefined'. */
+    "exactOptionalPropertyTypes": true,               /* Interpret optional property types as written, rather than adding 'undefined'. */
     // "noImplicitReturns": true,                        /* Enable error reporting for codepaths that do not explicitly return in a function. */
     // "noFallthroughCasesInSwitch": true,               /* Enable error reporting for fallthrough cases in switch statements. */
     // "noUncheckedIndexedAccess": true,                 /* Add 'undefined' to a type when accessed using an index. */

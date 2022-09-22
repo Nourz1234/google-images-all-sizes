@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Google Images All Sizes
-// @version      1.8.0
+// @version      1.9.0
 // @description  Adds 'All Sizes' and 'Full Size' buttons to google images.
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=google.com
 // @license      MIT
