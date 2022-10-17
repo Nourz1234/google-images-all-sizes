@@ -1,7 +1,5 @@
 
 (() => {
-    const { hasKey, isElementVisible } = NourzUtils;
-
     type Strings = {
         allSizes?: string,
         btnAllSizes?: string,
@@ -27,6 +25,14 @@
         console.error("Google Images All Sizes:", ...data);
         fail = true;
         alert("Google Images All Sizes:\nan error occurred. try refreshing, if this doesn't work then all you can do is wait for an update to fix this. (which might not happen so soon xD)");
+    }
+
+    function isElementVisible(elem: HTMLElement) {
+        return elem.offsetParent !== null;
+    }
+
+    function hasKey<T>(obj: T, key: PropertyKey): key is keyof T {
+        return key in obj;
     }
 
     function getPreviewImageUrl() {

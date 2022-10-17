@@ -3,10 +3,6 @@
     // the order matters
     "./src/header.ts",
 
-    /* libs */
-    "./node_modules/utils.js/dist/index.d.ts",
-    "./node_modules/utils.js/dist/index.js",
-
     "./src/types/*",
     "./src/files.ts",
     "./src/files/*",

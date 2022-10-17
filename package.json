@@ -18,9 +18,6 @@
     "url": "https://github.com/Nourz1234/google-images-all-sizes/issues"
   },
   "homepage": "https://github.com/Nourz1234/google-images-all-sizes#readme",
-  "dependencies": {
-    "utils.js": "github:Nourz1234/utils.js#v1.2.0"
-  },
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
